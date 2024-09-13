@@ -7,7 +7,8 @@ All code execution runs on [e2b](https://e2b.dev); you can modify `#code_interpr
 # Setup
 
 - Add API keys to `.env` based on `.env.sample`
-- Modify the code with a new prompt or pass it through the cli: `python main.py Create a report on the evolution of labor productivity in the United States, and what major technological shifts led to it`
+- Modify the code with a new prompt or pass it through the cli: `python main.py Create a report on the evolution of labor productivity in the United States, and what major technological shifts led to it` 
+- You might need to use Python3: `python3 main.py Create a report on the evolution of labor productivity in the United States, and what major technological shifts led to it`
 - Outputs are saved to `o1_outputs` folder
 
 TODOs:
