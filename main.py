@@ -7,7 +7,12 @@ import dotenv
 import sys
 
 from openai import OpenAI
-from e2b_code_interpreter import CodeInterpreter, ProcessExitException
+#from e2b_code_interpreter import CodeInterpreter, ProcessExitException
+
+
+from e2b import ProcessExitException
+from e2b_code_interpreter import CodeInterpreter
+
 import base64
 import io
 from PIL import Image
