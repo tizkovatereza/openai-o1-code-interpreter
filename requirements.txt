@@ -1,4 +1,7 @@
-openai
-e2b
-e2b-code-interpreter
-python-dotenv
+openai==1.45.0
+e2b==0.17.1
+e2b-code-interpreter==0.0.10
+python-dotenv==1.0.1
+pillow==10.4.0
+matplotlib==3.9.2
+pydantic==2.9.1
