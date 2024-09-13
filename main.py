@@ -54,17 +54,13 @@ def extract_code(execution_plan):
     return result.choices[0].message.parsed
 
 def code_interpret(sandbox: CodeInterpreter, code: str):
-  print("Running code interpreter...")
-  exec = sandbox.notebook.exec_cell(
-    code,
-    on_stderr=lambda stderr: print("[Code Interpreter]", stderr),
-    on_stdout=lambda stdout: print("[Code Interpreter]", stdout),
-  )
+    print("Running code interpreter...")
+    return sandbox.notebook.exec_cell(
+        code,
+        on_stderr=lambda stderr: print("[Code Interpreter]", stderr),
+        on_stdout=lambda stdout: print("[Code Interpreter]", stdout),
+    )
 
-  if exec.error:
-    print("[Code Interpreter ERROR]", exec.error)
-  else:
-    return exec.results 
 
 def display_png(png_data):
     image_data = base64.b64decode(png_data)
@@ -86,29 +82,25 @@ def run_code(script: PythonNotebookCell):
     code_interpret(sandbox, "pip install " + " ".join(script.pip_packages_required))
     
     code_to_run = script.code
-    waiting_for_answer = True
-    
-    while waiting_for_answer:
-        try:
-            results = code_interpret(sandbox, code_to_run)
-            waiting_for_answer = False
-        except ProcessExitException as e:        
-            prompt = f"""
-            Code Run: '{code_to_run}'
-            Error: {str(e)}
-            
-            How can I fix this?
-            """
-        
-            solution = ask_openai(
-                prompt,
-                model="gpt-4o"
-            )
-            
-            script = extract_code(solution)
-            
-            code_to_run = script.code
-            print(f"Suggested solution: {code_to_run}")
+
+    while True:
+        execution = code_interpret(sandbox, code_to_run)
+        if execution.error is None:
+            results = execution.results
+            break
+        prompt = f"""
+        Code Run: '{code_to_run}'
+        Error: {execution.error.name}, {execution.error.value}
+        Traceback: {execution.error.traceback}
+        How can I fix this?
+        """
+
+        solution = ask_openai(prompt, model="gpt-4o")
+
+        script = extract_code(solution)
+
+        code_to_run = script.code
+        print(f"Suggested solution: {code_to_run}")
 
     print(results)
     for result in results:
